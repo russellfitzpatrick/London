@@ -110,7 +110,7 @@
             </div>
             <br>
             <div class="col-md-auto">
-                <form>
+                <form ng-submit="addIdea()">
                     <div class="input-group">
                         <span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>
                         <input id="name" type="text" class="form-control" name="Name" placeholder="Name" ng-model="name">
@@ -119,6 +119,7 @@
                         <span class="input-group-addon">Idea</span>
                         <textarea id="msg" type="text" class="form-control" name="msg" ng-model="idea"></textarea>
                     </div>
+                    <button type="submit" class="btn btn-default">Add Idea</button>
                 </form>
             </div>
             <br>
@@ -127,15 +128,16 @@
                     <div class="panel-heading">
                         <h4><i class="fa fa-fw fa-check"></i> Ideas</h4>
                     </div>
-                    <div class="panel-body">
+                    <div class="panel-body" style="overflow: scroll; height: 500px;">
                         <ul class='list-group'>
-                        <li ng-repeat="comment in comments | orderBy: '-upvotes'" class='list-group-item'>
-                            <span class="glyphicon glyphicon-thumbs-up" ng-click="incrementUpvotes(comment)"></span>
-                            <h4 class='list-group-item-heading'> Comment: {{comment.comment}} </h4>
-                            <p class='list-group-item-text'> Name: {{comment.name}} - upvotes: {{comment.upvotes}}</p></li>
+                        <li ng-repeat="idea in ideas | orderBy: '-upvotes'" class='list-group-item'>
+                            <button type="button" class="btn btn-default btn-sm" ng-click="incrementUpvotes(idea)">
+                                <span class="glyphicon glyphicon-thumbs-up"></span> Like
+                            </button>
+                            <h4 class='list-group-item-heading'> Idea: {{idea.idea}} </h4>
+                            <p class='list-group-item-text'> Name: {{idea.name}} - upvotes: {{idea.upvotes}}</p></li>
                         </li>
                         </ul>
-                        <a href="#" class="btn btn-default">Learn More</a>
                     </div>
                 </div>
             </div>
