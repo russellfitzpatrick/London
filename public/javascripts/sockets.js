@@ -1,8 +1,5 @@
-/*(function() {
-    var socket = io();
-
-    socket.on('ideas', function (data) {
-        console.log('hope is here');
-        console.log(data);
-    });
-});*/
+// angular.module('london').factory('socket', function (socketFactory) {
+//     var socket = socketFactory();
+//     socket.forward('broadcast');
+//     return socket;
+// });

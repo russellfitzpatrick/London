@@ -1,10 +1,18 @@
 angular.module('london', [])
+
+    .factory('socket', function (socketFactory) {
+        var socket = socketFactory();
+        socket.forward('update');
+        return socket;
+    })
+
     .controller('MainCtrl', [
         '$scope',
         '$http',
-        function($scope, $http){
+        'socket',
+        function($scope, $http, socket){
 
-            const socket = io('http://localhost:3008');
+            //const socket = io('http://localhost:3008');
 
             $scope.ideas = [];
 
@@ -20,16 +28,22 @@ angular.module('london', [])
                 return $http.post('/ideas', idea).success(function(data){
                     $scope.ideas.push(data);
                     console.log('emitting idea posted');
-                    socket.emit('socket', data);
+                    socket.emit('idea', idea);
                 });
             };
+
+            $scope.$on('socket:update', function(data) {
+                console.log('got a message', data);
+                $scope.getAll();
+            });
+
 
             $scope.upvote = function(idea) {
                 return $http.put('/ideas/' + idea._id + '/upvote')
                     .success(function(data){
                         console.log("upvote worked");
                         idea.upvotes += 1;
-                        socket.emit('socket', data);
+                        socket.emit('idea', idea);
                     });
             };
 

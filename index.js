@@ -2,7 +2,8 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io')(server);
+var io = require('socket.io');
+io = io.listen(server);
 var path = require('path');
 var port = process.env.PORT || 3007;
 
@@ -76,15 +77,15 @@ var numUsers = 0;
 
 io.on('connection', function (socket) {
 
-    socket.on('socket', function (data) {
+    socket.on('idea', function (data) {
         console.log(data);
-        socket.broadcast.emit('news', { hello: 'world' });
+        io.sockets.emit('update', {name: 'update'});
     });
 });
 
-server.listen(3008, function () {
-    console.log('Server listening at port %d', port);
-});
+// server.listen(3008, function () {
+//     console.log('Server listening at port %d', port);
+// });
 
 app.listen(port, function () {
     console.log('Server listening at port %d', port);
