@@ -1,20 +1,19 @@
 angular.module('london', [])
 
-    .factory('socket', function (socketFactory) {
-        var socket = socketFactory();
-        socket.forward('update');
-        return socket;
-    })
+//   .factory('socket', function (socketFactory) {
+//        var socket = socketFactory();
+//	socket.forward('update');
+//       return socket;
+//    })
 
-    .controller('MainCtrl', [
-        '$scope',
+.controller('MainCtrl',[
+	'$scope',
         '$http',
-        'socket',
-        function($scope, $http, socket){
+        function($scope, $http){
 
             //const socket = io('http://localhost:3008');
-
-            $scope.ideas = [];
+	//	var socket = io.connect();
+		$scope.ideas = [];
 
             $scope.getAll = function() {
                 return $http.get('/ideas').success(function(data){
@@ -28,14 +27,14 @@ angular.module('london', [])
                 return $http.post('/ideas', idea).success(function(data){
                     $scope.ideas.push(data);
                     console.log('emitting idea posted');
-                    socket.emit('idea', idea);
+                   // socket.emit('update', idea);
                 });
             };
 
-            $scope.$on('socket:update', function(data) {
-                console.log('got a message', data);
-                $scope.getAll();
-            });
+         //   socket.on('update', function(data) {
+         //       console.log('got a message', data);
+         //       $scope.getAll();
+         //   });
 
 
             $scope.upvote = function(idea) {
@@ -43,7 +42,7 @@ angular.module('london', [])
                     .success(function(data){
                         console.log("upvote worked");
                         idea.upvotes += 1;
-                        socket.emit('idea', idea);
+                       // socket.emit('update', idea);
                     });
             };
 
@@ -59,5 +58,6 @@ angular.module('london', [])
             $scope.incrementUpvotes = function(idea) {
                 $scope.upvote(idea);
             };
+
         }
     ]);

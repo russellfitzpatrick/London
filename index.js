@@ -2,10 +2,10 @@
 var express = require('express');
 var app = express();
 var server = require('http').Server(app);
-var io = require('socket.io');
-io = io.listen(server);
+var io = require('socket.io')(server);
 var path = require('path');
 var port = process.env.PORT || 3007;
+//socket = require('./sockets/base.js');
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -71,15 +71,20 @@ app.put("/ideas/:idea/upvote", (req, res, next) => {
     res.json(idea);
 });
 });
-// Chatroom
 
-var numUsers = 0;
+//io.sockets.on('connection', socket);
 
-io.on('connection', function (socket) {
+io.sockets.on('connection', function (socket) {
 
-    socket.on('idea', function (data) {
+	socket.emit('update', {name: 'update'});
+	console.log("Connected socket");
+socket.on('disconnect', function () {
+       console.log('user disconnected');
+    });
+    socket.on('update', function (data) {
         console.log(data);
-        io.sockets.emit('update', {name: 'update'});
+        socket.broadcast.emit('update', {name: 'update'});
+	console.log("Emit sent");
     });
 });
 
@@ -87,6 +92,8 @@ io.on('connection', function (socket) {
 //     console.log('Server listening at port %d', port);
 // });
 
-app.listen(port, function () {
-    console.log('Server listening at port %d', port);
-});
+//app.listen(port, function () {
+//    console.log('Server listening at port %d', port);
+//});
+
+server.listen(port); 

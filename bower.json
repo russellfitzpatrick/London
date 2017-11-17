@@ -1,0 +1,20 @@
+{
+  "name": "socket.io-chat",
+  "description": "A simple chat client using socket.io",
+  "main": "index.js",
+  "authors": [
+    "Grant Timmerman"
+  ],
+  "license": "BSD",
+  "homepage": "https://github.com/russellfitzpatrick/London",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "angular-socket-io": "^0.7.0"
+  }
+}
