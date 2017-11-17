@@ -1,17 +1,17 @@
 {
-  "name": "London",
+  "name": "socket.io-chat",
   "version": "0.0.0",
+  "description": "A simple chat client using socket.io",
+  "main": "index.js",
+  "author": "Grant Timmerman",
   "private": true,
-  "scripts": {
-    "start": "node ./bin/www"
-  },
+  "license": "BSD",
   "dependencies": {
-    "body-parser": "~1.15.1",
-    "cookie-parser": "~1.4.3",
-    "debug": "~2.2.0",
-    "express": "~4.13.4",
-    "jade": "~1.11.0",
-    "morgan": "~1.7.0",
-    "serve-favicon": "~2.3.0"
+    "express": "4.13.4",
+    "mongoose": "^4.13.3",
+    "socket.io": "^2.0.4"
+  },
+  "scripts": {
+    "start": "node index.js"
   }
 }
