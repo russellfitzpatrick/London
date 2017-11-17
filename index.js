@@ -4,7 +4,11 @@ var app = express();
 var path = require('path');
 var server = require('http').createServer(app);
 var io = require('socket.io')(server);
-var port = process.env.PORT || 3000;
+var port = process.env.PORT || 3007;
+var bodyParser = require('body-parser');
+
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
 
 var mongoose = require('mongoose'); //Adds mongoose as a usable dependency
 
@@ -13,19 +17,16 @@ mongoose.connect('mongodb://localhost/ideaDB', { useMongoClient: true }); //Conn
 var ideaSchema = mongoose.Schema({ //Defines the Schema for this database
     idea: String,
     name: String,
-    upvotes: Number
+    upvotes: {type: Number, default: 0},
 });
-
-var Idea = mongoose.model('Idea', ideaSchema); //Makes an object from that schema as a model
-
-var db = mongoose.connection; //Saves the connection as a variable to use
+var db = mongoose.connection
 db.on('error', console.error.bind(console, 'connection error:')); //Checks for connection errors
 db.once('open', function() { //Lets us know when we're connected
     console.log('Connected');
 });
 
 ideaSchema.methods.upvote = function(cb) { this.upvotes += 1; this.save(cb); };
-
+var Idea = mongoose.model('Idea', ideaSchema);
 server.listen(port, function () {
     console.log('Server listening at port %d', port);
 });
@@ -34,22 +35,25 @@ server.listen(port, function () {
 var router = express.Router();
 app.use(express.static(path.join(__dirname, 'public')));
 
-router.get('/idea', function(req, res, next) {
+app.get('/ideas', function(req, res, next) {
     Idea.find(function(err, ideas){
         if(err){ return next(err); }
-        res.json(ideas);
+        console.log("Getting Ideas");
+	res.json(ideas);
     });
 });
 
-router.post('/ideas', function(req, res, next) {
+app.post('/ideas', function(req, res, next) {
     var idea = new Idea(req.body);
     idea.save(function(err, idea){
         if(err){ return next(err); }
-        res.json(ideas);
+	console.log("Idea:" + idea);
+        console.log("Posting idea");
+	res.json(idea);
     });
 });
 
-router.param('idea', function(req, res, next, id) {
+app.param('idea', function(req, res, next, id) {
     var query = Idea.findById(id);
     query.exec(function (err, idea){
         if (err) { return next(err); }
@@ -59,17 +63,16 @@ router.param('idea', function(req, res, next, id) {
     });
 });
 
-router.get('/ideas/:idea', function(req, res) {
+app.get('/ideas/:idea', function(req, res) {
     res.json(req.idea);
 });
 
-router.put('/ideas/:idea/upvote', function(req, res, next) {
-    req.idea.upvote(function(err, idea){
-        if (err) { return next(err); }
-        res.json(idea);
-    });
+app.put("/ideas/:idea/upvote", (req, res, next) => {
+  req.idea.upvote(function(err, idea){
+    if (err) { return next(err); }
+    res.json(idea);
+	});
 });
-
 // Chatroom
 
 var numUsers = 0;

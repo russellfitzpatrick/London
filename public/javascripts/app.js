@@ -28,8 +28,11 @@ angular.module('london', [])
 
             $scope.addIdea = function() {
                 if($scope.name === '' || $scope.idea === '') { return; }
-                $scope.create({name:$scope.name, idea:$scope.idea ,upvotes:0});
-                $scope.formContent='';
+                var newobject = {name:$scope.name, idea:$scope.idea ,upvotes:0};
+		$scope.create(newobject);
+                $scope.name='';
+		$scope.idea='';
+		console.log(newobject);
             };
 
             $scope.incrementUpvotes = function(idea) {
