@@ -3,13 +3,14 @@ angular.module('london', [])
         '$scope',
         '$http',
         function($scope, $http){
-            $scope.ideas = [
-                {idea:'Comment 1', name: 'Best', upvotes:5},
-                {idea:'Comment 2', name: 'Cody', upvotes:6},
-                {idea:'Comment 3', name: 'Russell', upvotes:1},
-                {idea:'Comment 4', name: 'Jake', upvotes:4},
-                {idea:'Comment 5', name: 'Mary Poppins', upvotes:3}
-            ];
+            $scope.ideas = [];
+
+            $scope.getAll = function() {
+                return $http.get('/ideas').success(function(data){
+                    angular.copy(data, $scope.ideas);
+                });
+            };
+            $scope.getAll();
 
             $scope.create = function(idea) {
                 return $http.post('/ideas', idea).success(function(data){
@@ -26,12 +27,16 @@ angular.module('london', [])
             };
 
             $scope.addIdea = function() {
-                $scope.ideas.push({name:$scope.name, idea:$scope.idea ,upvotes:0});
-                $scope.formContent='';
+                if($scope.name === '' || $scope.idea === '') { return; }
+                var newobject = {name:$scope.name, idea:$scope.idea ,upvotes:0};
+		$scope.create(newobject);
+                $scope.name='';
+		$scope.idea='';
+		console.log(newobject);
             };
 
             $scope.incrementUpvotes = function(idea) {
-                idea.upvotes += 1;
+                $scope.upvote(idea);
             };
         }
     ]);
