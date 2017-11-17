@@ -1,12 +1,12 @@
 // Setup basic express server
 var express = require('express');
 var app = express();
-var path = require('path');
-var server = require('http').createServer(app);
+var server = require('http').Server(app);
 var io = require('socket.io')(server);
+var path = require('path');
 var port = process.env.PORT || 3007;
-var bodyParser = require('body-parser');
 
+var bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
@@ -27,12 +27,9 @@ db.once('open', function() { //Lets us know when we're connected
 
 ideaSchema.methods.upvote = function(cb) { this.upvotes += 1; this.save(cb); };
 var Idea = mongoose.model('Idea', ideaSchema);
-server.listen(port, function () {
-    console.log('Server listening at port %d', port);
-});
 
 // Routing
-var router = express.Router();
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.get('/ideas', function(req, res, next) {
@@ -79,16 +76,16 @@ var numUsers = 0;
 
 io.on('connection', function (socket) {
 
-    // when the client emits 'new message', this listens and executes
-    socket.on('idea posted', function (data) {
-        // we tell the client to execute 'new message'
-        Console.log('idea posted socket');
-        socket.broadcast.emit('new idea', data);
+    socket.on('socket', function (data) {
+        console.log(data);
+        socket.broadcast.emit('news', { hello: 'world' });
     });
+});
 
-    socket.on('idea upvoted', function (data) {
-        // we tell the client to execute 'new message'
-        Console.log('idea upvoted socket');
-        socket.broadcast.emit('new upvote', data);
-    });
+server.listen(3008, function () {
+    console.log('Server listening at port %d', port);
+});
+
+app.listen(port, function () {
+    console.log('Server listening at port %d', port);
 });

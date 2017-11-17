@@ -1,11 +1,8 @@
-/*$(function() {
+/*(function() {
     var socket = io();
 
-    socket.on('new idea', function (data) {
-
-    });
-
-    socket.on('new upvote', function (data) {
-
+    socket.on('ideas', function (data) {
+        console.log('hope is here');
+        console.log(data);
     });
 });*/

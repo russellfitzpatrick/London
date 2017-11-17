@@ -3,11 +3,15 @@ angular.module('london', [])
         '$scope',
         '$http',
         function($scope, $http){
+
+            const socket = io('http://localhost:3008');
+
             $scope.ideas = [];
 
             $scope.getAll = function() {
                 return $http.get('/ideas').success(function(data){
                     angular.copy(data, $scope.ideas);
+
                 });
             };
             $scope.getAll();
@@ -15,6 +19,8 @@ angular.module('london', [])
             $scope.create = function(idea) {
                 return $http.post('/ideas', idea).success(function(data){
                     $scope.ideas.push(data);
+                    console.log('emitting idea posted');
+                    socket.emit('socket', data);
                 });
             };
 
@@ -23,16 +29,17 @@ angular.module('london', [])
                     .success(function(data){
                         console.log("upvote worked");
                         idea.upvotes += 1;
+                        socket.emit('socket', data);
                     });
             };
 
             $scope.addIdea = function() {
                 if($scope.name === '' || $scope.idea === '') { return; }
                 var newobject = {name:$scope.name, idea:$scope.idea ,upvotes:0};
-		$scope.create(newobject);
-                $scope.name='';
-		$scope.idea='';
-		console.log(newobject);
+                $scope.create(newobject);
+                        $scope.name='';
+                $scope.idea='';
+                console.log(newobject);
             };
 
             $scope.incrementUpvotes = function(idea) {
