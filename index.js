@@ -35,6 +35,7 @@ var router = express.Router();
 app.use(express.static(path.join(__dirname, 'public')));
 
 router.get('/idea', function(req, res, next) {
+    Console.log("in it");
     Idea.find(function(err, ideas){
         if(err){ return next(err); }
         res.json(ideas);
@@ -42,6 +43,7 @@ router.get('/idea', function(req, res, next) {
 });
 
 router.post('/ideas', function(req, res, next) {
+    Console.log("in it");
     var idea = new Idea(req.body);
     idea.save(function(err, idea){
         if(err){ return next(err); }
@@ -50,6 +52,7 @@ router.post('/ideas', function(req, res, next) {
 });
 
 router.param('idea', function(req, res, next, id) {
+    Console.log("in it");
     var query = Idea.findById(id);
     query.exec(function (err, idea){
         if (err) { return next(err); }
@@ -60,10 +63,12 @@ router.param('idea', function(req, res, next, id) {
 });
 
 router.get('/ideas/:idea', function(req, res) {
+    Console.log("in it");
     res.json(req.idea);
 });
 
 router.put('/ideas/:idea/upvote', function(req, res, next) {
+    Console.log("in it");
     req.idea.upvote(function(err, idea){
         if (err) { return next(err); }
         res.json(idea);
